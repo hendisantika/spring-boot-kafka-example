@@ -2,6 +2,7 @@ package com.hendisantika;
 
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.common.serialization.ByteArrayDeserializer;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -116,5 +117,13 @@ public class KafkaConfig {
         factory.setConsumerFactory(stringConsumerFactory());
 
         return factory;
+    }
+
+    // Byte Array Consumer Configuration
+    @Bean
+    public ConsumerFactory<String, byte[]> byteArrayConsumerFactory() {
+        return new DefaultKafkaConsumerFactory<>(
+                kafkaProperties.buildConsumerProperties(), new StringDeserializer(), new ByteArrayDeserializer()
+        );
     }
 }
