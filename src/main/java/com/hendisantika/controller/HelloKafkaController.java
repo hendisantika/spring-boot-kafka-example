@@ -1,10 +1,13 @@
 package com.hendisantika.controller;
 
 import com.hendisantika.PracticalAdvice;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -50,5 +53,13 @@ public class HelloKafkaController {
         latch.await(60, TimeUnit.SECONDS);
         logger.info("All messages received");
         return "Hello Kafka!";
+    }
+
+    @KafkaListener(topics = "hendi-topic", clientIdPrefix = "json",
+            containerFactory = "kafkaListenerContainerFactory")
+    public void listenAsObject(ConsumerRecord<String, PracticalAdvice> cr, @Payload PracticalAdvice payload) {
+        logger.info("Logger 1 [JSON] received key {}: Type [{}] | Payload: {} | Record: {}", cr.key(),
+                typeIdHeader(cr.headers()), payload, cr.toString());
+        latch.countDown();
     }
 }
