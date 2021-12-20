@@ -2,6 +2,7 @@ package com.hendisantika.controller;
 
 import com.hendisantika.PracticalAdvice;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.common.header.Headers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
+import java.util.stream.StreamSupport;
 
 /**
  * Created by IntelliJ IDEA.
@@ -55,11 +57,17 @@ public class HelloKafkaController {
         return "Hello Kafka!";
     }
 
+    private static String typeIdHeader(Headers headers) {
+        return StreamSupport.stream(headers.spliterator(), false)
+                .filter(header -> header.key().equals("__TypeId__"))
+                .findFirst().map(header -> new String(header.value())).orElse("N/A");
+    }
+
     @KafkaListener(topics = "hendi-topic", clientIdPrefix = "json",
             containerFactory = "kafkaListenerContainerFactory")
     public void listenAsObject(ConsumerRecord<String, PracticalAdvice> cr, @Payload PracticalAdvice payload) {
         logger.info("Logger 1 [JSON] received key {}: Type [{}] | Payload: {} | Record: {}", cr.key(),
-                typeIdHeader(cr.headers()), payload, cr.toString());
+                typeIdHeader(cr.headers()), payload, cr);
         latch.countDown();
     }
 
@@ -67,7 +75,7 @@ public class HelloKafkaController {
             containerFactory = "kafkaListenerStringContainerFactory")
     public void listenAsString(ConsumerRecord<String, String> cr, @Payload String payload) {
         logger.info("Logger 2 [String] received key {}: Type [{}] | Payload: {} | Record: {}", cr.key(),
-                typeIdHeader(cr.headers()), payload, cr.toString());
+                typeIdHeader(cr.headers()), payload, cr);
         latch.countDown();
     }
 
@@ -75,7 +83,7 @@ public class HelloKafkaController {
             containerFactory = "kafkaListenerByteArrayContainerFactory")
     public void listenAsByteArray(ConsumerRecord<String, byte[]> cr, @Payload byte[] payload) {
         logger.info("Logger 3 [ByteArray] received key {}: Type [{}] | Payload: {} | Record: {}", cr.key(),
-                typeIdHeader(cr.headers()), payload, cr.toString());
+                typeIdHeader(cr.headers()), payload, cr);
         latch.countDown();
     }
 }
