@@ -108,4 +108,13 @@ public class KafkaConfig {
                 kafkaProperties.buildConsumerProperties(), new StringDeserializer(), new StringDeserializer()
         );
     }
+
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, String> kafkaListenerStringContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, String> factory =
+                new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(stringConsumerFactory());
+
+        return factory;
+    }
 }
