@@ -1,0 +1,12 @@
+spring:
+  kafka:
+    consumer:
+      group-id: hendi-loggers
+      auto-offset-reset: earliest
+    # change this property if you are using your own
+    # Kafka cluster or your Docker IP is different
+    bootstrap-servers: localhost:9092
+
+hendi:
+  topic-name: hendi-topic
+  messages-per-request: 10
