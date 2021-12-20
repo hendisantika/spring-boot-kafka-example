@@ -1,5 +1,6 @@
 package com.hendisantika;
 
+import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,5 +50,11 @@ public class KafkaConfig {
     @Bean
     public KafkaTemplate<String, Object> kafkaTemplate() {
         return new KafkaTemplate<>(producerFactory());
+    }
+
+
+    @Bean
+    public NewTopic adviceTopic() {
+        return new NewTopic(topicName, 3, (short) 1);
     }
 }
