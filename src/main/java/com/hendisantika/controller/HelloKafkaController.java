@@ -62,4 +62,12 @@ public class HelloKafkaController {
                 typeIdHeader(cr.headers()), payload, cr.toString());
         latch.countDown();
     }
+
+    @KafkaListener(topics = "hendi-topic", clientIdPrefix = "string",
+            containerFactory = "kafkaListenerStringContainerFactory")
+    public void listenAsString(ConsumerRecord<String, String> cr, @Payload String payload) {
+        logger.info("Logger 2 [String] received key {}: Type [{}] | Payload: {} | Record: {}", cr.key(),
+                typeIdHeader(cr.headers()), payload, cr.toString());
+        latch.countDown();
+    }
 }
