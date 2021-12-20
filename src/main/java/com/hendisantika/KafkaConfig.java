@@ -126,4 +126,12 @@ public class KafkaConfig {
                 kafkaProperties.buildConsumerProperties(), new StringDeserializer(), new ByteArrayDeserializer()
         );
     }
+
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, byte[]> kafkaListenerByteArrayContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, byte[]> factory =
+                new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(byteArrayConsumerFactory());
+        return factory;
+    }
 }
