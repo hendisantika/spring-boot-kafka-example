@@ -99,4 +99,13 @@ public class KafkaConfig {
 
         return factory;
     }
+
+    // String Consumer Configuration
+
+    @Bean
+    public ConsumerFactory<String, String> stringConsumerFactory() {
+        return new DefaultKafkaConsumerFactory<>(
+                kafkaProperties.buildConsumerProperties(), new StringDeserializer(), new StringDeserializer()
+        );
+    }
 }
